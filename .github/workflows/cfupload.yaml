@@ -59,7 +59,7 @@ jobs:
       uses: itsmeow/curseforge-upload@v3
       with:
         file_path: "./Dark_Everywhere_1.18.zip"
-        display_name: "Dark Everywhere 2 ${{ steps.tag_versao.outputs.tag_name }}"
+        display_name: "Dark Everywhere 2 ${{ steps.Versao_da_Tag.outputs.tag_versao }}"
         game_endpoint: "minecraft"
         relations: "fabric-api:requiredDependency"
         game_versions: "Minecraft 1.18:1.18.1:1.18.2"

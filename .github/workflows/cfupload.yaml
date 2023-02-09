@@ -1,0 +1,66 @@
+name: Get latest release file
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["up texture pack 📤"]
+    types:
+      - completed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Peguando ID do Ultimo Release
+      id: latest_release
+      run: |
+        release_id=$(curl -s https://api.github.com/repos/vindocel/Dark-Everywhere/releases/latest | jq '.id')
+        echo "::set-output name=release_id::$release_id"
+
+    - name: URL dos assets
+      run: |
+        assets_url=$(curl -s https://api.github.com/repos/vindocel/Dark-Everywhere/releases/${{ steps.latest_release.outputs.release_id }} | jq '.assets_url')
+        echo "::set-output name=assets_url::$assets_url"
+
+    - name: Versao da Tag
+      run: |
+        tag_name=$(curl -s https://api.github.com/repos/vindocel/Dark-Everywhere/releases/${{ steps.latest_release.outputs.release_id }} | jq '.tag_name')
+        echo "::set-output name=tag_name::${{ tag_name }}"
+
+    - name: URL da Textura 1.18
+      run: |
+        file_url_1=$(curl -s ${{ steps.get_assets_url.outputs.assets_url }} | jq '.[] | select(.name == "Dark_Everywhere_1.18.zip") | .url')
+        echo "::set-output name=file_url_1::$file_url_1"
+
+    - name: Download da Textura 1.18
+      run: |
+        curl -sLJO ${{ steps.get_file_url_1.outputs.file_url_1 }}
+
+    - name: URL da Textura 1.19
+      run: |
+        file_url_2=$(curl -s ${{ steps.get_assets_url.outputs.assets_url }} | jq '.[] | select(.name == "Dark_Everywhere_1.19.zip") | .url')
+        echo "::set-output name=file_url_2::$file_url_2"
+
+    - name: Download da Textura 1.19
+      run: |
+        curl -sLJO ${{ steps.get_file_url_2.outputs.file_url_2 }}
+
+    - name: URL da Textura 1.19.3
+      run: |
+        file_url_3=$(curl -s ${{ steps.get_assets_url.outputs.assets_url }} | jq '.[] | select(.name == "Dark_Everywhere_1.19.3.zip") | .url')
+        echo "::set-output name=file_url_3::$file_url_3"
+
+    - name: Download da Textura 1.19.3
+      run: |
+        curl -sLJO ${{ steps.get_file_url_3.outputs.file_url_3 }}
+
+    - name: "Upload to CurseForge 🔥"
+      uses: itsmeow/curseforge-upload@v3
+      with:
+        file_path: "./Dark_Everywhere_1.18.zip"
+        game_endpoint: "minecraft"
+        relations: "fabric-api:requiredDependency"
+        game_versions: "Minecraft 1.18:1.18.1:1.18.2"
+        project_id: "0"
+        token: "${{ secrets.CF_API_TOKEN }}"        

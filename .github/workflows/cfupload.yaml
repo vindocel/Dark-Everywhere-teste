@@ -23,10 +23,19 @@ jobs:
         assets_url=$(curl -s https://api.github.com/repos/vindocel/Dark-Everywhere/releases/${{ steps.latest_release.outputs.release_id }} | jq '.assets_url')
         echo "::set-output name=assets_url::$assets_url"
 
-    - name: Versao da Tag
-      run: |
-        tag_versao=$(curl -s https://api.github.com/repos/vindocel/Dark-Everywhere/releases/latest | jq '.tag_name')
-        echo "::set-output name=tag_versao::${{ tag_versao }}"
+    - name: extrair tag
+      id: fetch_release
+      uses: curl-action/curl@v2
+      with:
+        args: curl -s https://api.github.com/repos/vindocel/Dark-Everywhere/releases/${{ steps.latest_release.outputs.release_id }}
+      env:
+        API_RESPONSE: ${{ steps.fetch_release.outputs.response }}
+
+    - name: Parse JSON
+      id: parse_json
+      uses: actions/parse-json@v2
+      with:
+        json: ${{ env.API_RESPONSE }}
 
     - name: URL da Textura 1.18
       run: |
@@ -59,7 +68,7 @@ jobs:
       uses: itsmeow/curseforge-upload@v3
       with:
         file_path: "./Dark_Everywhere_1.18.zip"
-        display_name: "Dark Everywhere 2 ${{ steps.Versao_da_Tag.outputs.tag_versao }}"
+        display_name: "Dark Everywhere 2 ${{ steps.parse_json.outputs.json.tag_name }}"
         game_endpoint: "minecraft"
         relations: "fabric-api:requiredDependency"
         game_versions: "Minecraft 1.18:1.18.1:1.18.2"

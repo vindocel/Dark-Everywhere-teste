@@ -45,8 +45,8 @@ jobs:
       uses: itsmeow/curseforge-upload@v3
       with:
         file_path: "./Dark_Everywhere_1.18.zip"
+        project_id: "687374"
+        token: "${{ secrets.CF_API_TOKEN }}"   
         display_name: "Dark Everywhere ${{ env.LATEST_TAG }}"
         game_endpoint: "minecraft"
-        game_versions: 1.18:1.18.1:1.18.2
-        project_id: "687374"
-        token: "${{ secrets.CF_API_TOKEN }}"        
+        game_versions: "1.18"     

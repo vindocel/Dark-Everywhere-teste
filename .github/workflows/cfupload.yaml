@@ -16,12 +16,12 @@ jobs:
       id: latest_release
       run: |
         release_id=$(curl -s https://api.github.com/repos/vindocel/Dark-Everywhere/releases/latest | jq '.id')
-        echo "::set-output name=release_id::$release_id"
+        echo "release_id=$release_id" >> $GITHUB_ENV
 
     - name: URL dos assets
       run: |
-        assets_url=$(curl -s https://api.github.com/repos/vindocel/Dark-Everywhere/releases/${{ steps.latest_release.outputs.release_id }} | jq '.assets_url')
-        echo "::set-output name=assets_url::$assets_url"
+        assets_url=$(curl -s https://api.github.com/repos/vindocel/Dark-Everywhere/releases/${{ env.release_id }} | jq '.assets_url')
+        echo "assets_url=$assets_url" >> $GITHUB_ENV
 
     - name: Redeem the sent Tag 🏷️
       run: |
@@ -31,30 +31,30 @@ jobs:
 
     - name: URL da Textura 1.18
       run: |
-        file_url_1=$(curl -s ${{ steps.get_assets_url.outputs.assets_url }} | jq '.[] | select(.name == "Dark_Everywhere_1.18.zip") | .url')
-        echo "::set-output name=file_url_1::$file_url_1"
+        file_url_1=$(curl -s ${{ env.assets_url }} | jq '.[] | select(.name == "Dark_Everywhere_1.18.zip") | .url')
+        echo "file_url_1=$file_url_1" >> $GITHUB_ENV
 
     - name: Download da Textura 1.18
       run: |
-        curl -sLJO ${{ steps.get_file_url_1.outputs.file_url_1 }}
+        curl -sLJO ${{ env.file_url_1 }}
 
     - name: URL da Textura 1.19
       run: |
-        file_url_2=$(curl -s ${{ steps.get_assets_url.outputs.assets_url }} | jq '.[] | select(.name == "Dark_Everywhere_1.19.zip") | .url')
-        echo "::set-output name=file_url_2::$file_url_2"
+        file_url_2=$(curl -s ${{ env.assets_url }} | jq '.[] | select(.name == "Dark_Everywhere_1.19.zip") | .url')
+        echo "file_url_2=$file_url_2" >> $GITHUB_ENV
 
     - name: Download da Textura 1.19
       run: |
-        curl -sLJO ${{ steps.get_file_url_2.outputs.file_url_2 }}
+        curl -sLJO ${{ env.file_url_2 }}
 
     - name: URL da Textura 1.19.3
       run: |
-        file_url_3=$(curl -s ${{ steps.get_assets_url.outputs.assets_url }} | jq '.[] | select(.name == "Dark_Everywhere_1.19.3.zip") | .url')
-        echo "::set-output name=file_url_3::$file_url_3"
+        file_url_3=$(curl -s ${{ env.assets_url }} | jq '.[] | select(.name == "Dark_Everywhere_1.19.3.zip") | .url')
+        echo "file_url_3=$file_url_3" >> $GITHUB_ENV
 
     - name: Download da Textura 1.19.3
       run: |
-        curl -sLJO ${{ steps.get_file_url_3.outputs.file_url_3 }}
+        curl -sLJO ${{ env.file_url_3 }}
 
     - name: "Upload to CurseForge 🔥"
       uses: itsmeow/curseforge-upload@v3

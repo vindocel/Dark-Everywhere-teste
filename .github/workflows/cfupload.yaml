@@ -49,4 +49,4 @@ jobs:
         token: "${{ secrets.CF_API_TOKEN }}"   
         display_name: "Dark Everywhere ${{ env.LATEST_TAG }}"
         game_endpoint: "minecraft"
-        game_versions: "1.18"     
+        game_versions: "Minecraft 1.18:1.18.1:1.18.2,Client,Server"
